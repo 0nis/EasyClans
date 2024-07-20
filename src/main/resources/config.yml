@@ -1,0 +1,46 @@
+######################################################
+# ------------------- Config.yml ------------------- #
+######################################################
+
+# Message format from clan chats to discord admin chat:
+# {clan} - The clan name
+# {player} - The player name
+# {display} - The player display name
+# {message} - The message
+messageFormat-clans-to-discord-admin: '[{clan}] {player}: {message}'
+
+# Message format from clan chats to themselves:
+onClanChatMessage: '&8[&e&l{clan}&8] &a{display} &8> &f{message}'
+
+# The format from clan chats to their respective discord channels:
+messageFormat-clans-to-discord: '{message}'
+
+# The format from discord clan chats to their respective clan chats:
+messageFormat-discord-to-clans: '&8[&e&l{clan}&8] &8[&3Discord&8] &a{player} &8> &f{message}'
+
+# The format of the clan prefix as is showed when using the placeholder %easyclans_clan-prefix%.
+prefixFormat: '&8[&3{prefix}&8]&r '
+
+# The minimum and maximum length of a clan name.
+minClanNameLength: 3
+maxClanNameLength: 16
+
+# The minimum and maximum length of a clan prefix
+minClanPrefixLength: 3
+maxClanPrefixLength: 6
+
+# The maximum amount of members a clan can have.
+maxMembers: 10
+
+# The minimum amount of members needed to set a home.
+minMembersForHome: 3
+
+# The time in seconds a player has to accept a clan invite.
+clanInviteTimeout: 10
+
+# Color codes: &a, &b, &c, &d, &e, &f, &0, &1, &2, &3, &4, &5, &6, &7, &8, &9, &k, &l, &m, &n, &o, &r
+# Format codes: &k, &l, &m, &n, &o, &r
+# Magic code: &k
+allowColorCodesInPrefix: true
+allowFormatCodesInPrefix: false
+allowMagicCodeInPrefix: false

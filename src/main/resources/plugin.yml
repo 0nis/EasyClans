@@ -1,0 +1,23 @@
+name: EasyClans
+version: '${project.version}'
+main: nl.me.easyclans.EasyClans
+api-version: '1.20'
+author: Susie
+description: A simple way of adding clans to your server.
+softdepend:
+  - BlockLocker
+  - PlaceholderAPI
+  - DiscordSRV
+commands:
+  clan:
+    description: Clan command
+    usage: /clan
+    aliases: [c, easyclans]
+  clanchat:
+    description: Clan chat
+    usage: /cc <message>
+    aliases: [cc]
+  clan-id:
+    description: Get the ID of a clan by name
+    usage: /clan-id
+    aliases: [cid]
