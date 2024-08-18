@@ -17,9 +17,8 @@ jobs:
         with:
           java-version: ${{ matrix.java }}
           distribution: 'microsoft'
-          cache: maven 
       - name: build
-        run: mvn -f package pom.xml
+        run: mvn package -f pom.xml
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
