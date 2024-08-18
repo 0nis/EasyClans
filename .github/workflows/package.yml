@@ -19,7 +19,7 @@ jobs:
           distribution: 'microsoft'
           cache: maven 
       - name: build
-        run: mvn -f package
+        run: mvn -f package pom.xml
       - name: Upload packages
         uses: actions/upload-artifact@v4
         with:
