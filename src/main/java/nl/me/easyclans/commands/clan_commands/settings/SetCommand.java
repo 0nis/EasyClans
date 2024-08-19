@@ -65,14 +65,14 @@ public class SetCommand implements IClanCommand {
             }
         }
         if (!PlayerUtils.isPlayerLeader(player, clan)) return MessageUtils.onMustBeLeader(player);
-        String value = "";
+        String enteredPrefix = "";
         if (!setting.equalsIgnoreCase("home")) {
-            value = String.join(" ", args).substring(args[0].length() + args[1].length() + 2);
+            enteredPrefix = String.join(" ", args).substring(args[0].length() + args[1].length() + 2);
         } else {
             if (args.length == 3) {
-                value = args[2];
+                enteredPrefix = args[2];
             } else {
-                value = null;
+                enteredPrefix = null;
             }
         }
         ConfigurationSection config = EasyClans.getPlugin().getConfig();
@@ -85,17 +85,17 @@ public class SetCommand implements IClanCommand {
                 String oldName = clan.getName();
                 int minNameLength = config.getInt("minClanNameLength");
                 int maxNameLength = config.getInt("maxClanNameLength");
-                if (value.length() < minNameLength || value.length() > maxNameLength)
+                if (enteredPrefix.length() < minNameLength || enteredPrefix.length() > maxNameLength)
                     return MessageUtils.onInvalidName(player, minNameLength, maxNameLength);
-                if (!value.matches("^[a-zA-Z0-9_-]+$"))
+                if (!enteredPrefix.matches("^[a-zA-Z0-9_-]+$"))
                     return MessageUtils.onInvalidName(player, minNameLength, maxNameLength);
-                if (!ColorUtils.isNameOrPrefixAllowed(value))
+                if (!ColorUtils.isNameOrPrefixAllowed(enteredPrefix))
                     return MessageUtils.onInvalidCodes(player);
                 List<String> clanNames = ClanUtils.getAlLClanNames();
                 if (clanNames.contains(args[1]))
-                    return MessageUtils.onClanAlreadyExists(player, value);
-                ClanUtils.setName(clan.getClanId(), value);
-                return MessageUtils.onClanRenamed(player, oldName, value);
+                    return MessageUtils.onClanAlreadyExists(player, enteredPrefix);
+                ClanUtils.setName(clan.getClanId(), enteredPrefix);
+                return MessageUtils.onClanRenamed(player, oldName, enteredPrefix);
 
             // The prefix of the clan, for optional decoration
             case "prefix":
@@ -104,26 +104,26 @@ public class SetCommand implements IClanCommand {
                 String oldPrefix = clan.getPrefix();
                 int minPrefixLength = config.getInt("minClanPrefixLength");
                 int maxPrefixLength = config.getInt("maxClanPrefixLength");
-                String formattedPrefix = ChatColor.stripColor(ColorUtils.formatPrefix(value));
-                if (formattedPrefix.length() < minPrefixLength || formattedPrefix.length() > maxPrefixLength)
+                String strippedPrefix = ChatColor.stripColor(enteredPrefix);
+                if (strippedPrefix.length() < minPrefixLength || strippedPrefix.length() > maxPrefixLength)
                     return MessageUtils.onInvalidPrefix(player, minPrefixLength, maxPrefixLength);
-                if (!ColorUtils.isNameOrPrefixAllowed(value))
+                if (!ColorUtils.isNameOrPrefixAllowed(enteredPrefix))
                     return MessageUtils.onInvalidCodes(player);
-                ClanUtils.setPrefix(clan.getClanId(), value);
-                return MessageUtils.onClanPrefixChanged(player, clan.getName(), oldPrefix, value);
+                ClanUtils.setPrefix(clan.getClanId(), enteredPrefix);
+                return MessageUtils.onClanPrefixChanged(player, clan.getName(), oldPrefix, enteredPrefix);
 
             // The description of the clan
             case "description":
                 if (!player.hasPermission("easyclans.clan.set.description") && !player.isOp())
                     return MessageUtils.onNoPermission(player, "easyclans.clan.set.description");
-                ClanUtils.setDescription(clan.getClanId(), value);
-                return MessageUtils.onClanDescriptionChanged(player, clan.getName(), value);
+                ClanUtils.setDescription(clan.getClanId(), enteredPrefix);
+                return MessageUtils.onClanDescriptionChanged(player, clan.getName(), enteredPrefix);
 
             // Whether friendly fire is enabled or not; meaning whether clan members can hurt each other
             case "friendlyFireEnabled":
                 if (!player.hasPermission("easyclans.clan.set.friendlyFireEnabled") && !player.isOp())
                     return MessageUtils.onNoPermission(player, "easyclans.clan.set.friendlyFireEnabled");
-                boolean friendlyFireEnabled = Boolean.parseBoolean(value);
+                boolean friendlyFireEnabled = Boolean.parseBoolean(enteredPrefix);
                 ClanUtils.setIsFriendlyFireEnabled(clan.getClanId(), friendlyFireEnabled);
                 if (friendlyFireEnabled) return MessageUtils.onClanFriendlyFireOn(player, clan.getName());
                 return MessageUtils.onClanFriendlyFireOff(player, clan.getName());
@@ -133,19 +133,19 @@ public class SetCommand implements IClanCommand {
                 if (!player.hasPermission("easyclans.clan.set.home") && !player.isOp())
                     return MessageUtils.onNoPermission(player, "easyclans.clan.set.home");
                 int minMembersForHome = config.getInt("minMembersForHome");
-                if (value == null || value.equalsIgnoreCase("here")) {
+                if (enteredPrefix == null || enteredPrefix.equalsIgnoreCase("here")) {
                     if (clan.getMembers().size() < minMembersForHome)
                         return MessageUtils.onClanTooFewMembersForHome(player, clan.getName(), minMembersForHome);
                     Location location = player.getLocation();
                     ClanUtils.setHome(clan.getClanId(), location);
                     return MessageUtils.onClanSetHome(player, clan.getName(), location);
-                } else if (value.equalsIgnoreCase("none") || value.equalsIgnoreCase("null") || value.equalsIgnoreCase("remove")) {
+                } else if (enteredPrefix.equalsIgnoreCase("none") || enteredPrefix.equalsIgnoreCase("null") || enteredPrefix.equalsIgnoreCase("remove")) {
                     ClanUtils.setHome(clan.getClanId(), null);
                     return MessageUtils.onClanRemoveHome(player, clan.getName());
-                } else if (value.equalsIgnoreCase("public") || value.equalsIgnoreCase("private")) {
+                } else if (enteredPrefix.equalsIgnoreCase("public") || enteredPrefix.equalsIgnoreCase("private")) {
                     if (!player.hasPermission("easyclans.clan.set.public-home") && !player.isOp())
                         return MessageUtils.onNoPermission(player, "easyclans.clan.set.public-home");
-                    boolean homePublic = value.equalsIgnoreCase("public") ? true : false;
+                    boolean homePublic = enteredPrefix.equalsIgnoreCase("public") ? true : false;
                     ClanUtils.setIsHomePublic(clan.getClanId(), homePublic);
                     if (homePublic) return MessageUtils.onClanHomePublic(player, clan.getName());
                     return MessageUtils.onClanHomePrivate(player, clan.getName());
@@ -158,13 +158,13 @@ public class SetCommand implements IClanCommand {
                 if (!player.hasPermission("easyclans.clan.set.owner") && !player.isOp())
                     return MessageUtils.onNoPermission(player, "easyclans.clan.set.owner");
                 if (!clan.getOwner().toString().equals(player.getUniqueId().toString())) return MessageUtils.onMustBeOwner(player);
-                UUID newOwnerUUID = PlayerUtils.getPlayerUUIDFromName(value);
-                if (newOwnerUUID == null) return MessageUtils.onPlayerNotFound(player, value);
+                UUID newOwnerUUID = PlayerUtils.getPlayerUUIDFromName(enteredPrefix);
+                if (newOwnerUUID == null) return MessageUtils.onPlayerNotFound(player, enteredPrefix);
                 OfflinePlayer newOwner = Bukkit.getOfflinePlayer(newOwnerUUID);
-                if (newOwner == null) return MessageUtils.onPlayerNotFound(player, value);
+                if (newOwner == null) return MessageUtils.onPlayerNotFound(player, enteredPrefix);
                 if (!ClanUtils.isMember(clan.getClanId(), newOwnerUUID)) return MessageUtils.onPlayerNotInClan(player, newOwner.getName());
                 ClanUtils.setOwner(clan.getClanId(), newOwner.getUniqueId());
-                return MessageUtils.onClanOwnerChanged(player, clan.getName(), player.getName(), value);
+                return MessageUtils.onClanOwnerChanged(player, clan.getName(), player.getName(), enteredPrefix);
 
             // Oopsie :(
             default:
